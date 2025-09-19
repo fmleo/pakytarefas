@@ -2,8 +2,11 @@ import datetime
 import logging
 
 import click
+import httpx
 import questionary
+from typing_extensions import List
 
+from config import WUZAPI_SERVER_URL, WUZAPI_TOKEN
 from db_session import get_session
 from models import Gincana
 from repository import GincanaRepository, OrganizadoraRepository
@@ -42,6 +45,21 @@ def add():
 
         id_interno = questionary.text(message="ID Usado pela organizadora").ask()
 
+        grupos_whatsapp: List[questionary.Choice] = []
+        with httpx.Client(
+            base_url=WUZAPI_SERVER_URL, headers={"token": WUZAPI_TOKEN}
+        ) as client:
+            response = client.get("/group/list")
+            body = response.json()["data"]
+            for group in body["Groups"]:
+                grupos_whatsapp.append(
+                    questionary.Choice(title=group["Name"], value=group["JID"])
+                )
+
+        id_grupo_whatsapp = questionary.select(
+            message="Grupo no qual enviar tarefas", choices=grupos_whatsapp
+        ).ask()
+
         if (org := organizadora_repo.find_by_nome(organizadora)) is None:
             logger.fatal(f"Organizadora {organizadora} não encontrada.")
             return
@@ -56,6 +74,7 @@ def add():
             organizadora_id=org.id,
             inicio=inicio,
             fim=fim,
+            id_grupo_whatsapp=id_grupo_whatsapp,
         )
         gincana_repo.add(gincana)
 

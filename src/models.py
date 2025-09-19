@@ -27,6 +27,8 @@ class Gincana(SQLModel, table=True):
 
     id_interno: Optional[str]
 
+    id_grupo_whatsapp: Optional[str] = Field()
+
 
 class Tarefa(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
