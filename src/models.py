@@ -1,6 +1,7 @@
 import datetime
 from typing import List, Optional
 
+import unidecode
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -39,3 +40,7 @@ class Tarefa(SQLModel, table=True):
     gincana: Gincana = Relationship(back_populates="tarefas")
 
     id_interno: Optional[str]
+
+    @property
+    def unidecoded_name(self) -> str:
+        return unidecode.unidecode(self.nome).replace(" ", "_")

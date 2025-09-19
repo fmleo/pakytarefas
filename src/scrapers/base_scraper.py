@@ -32,7 +32,7 @@ class BaseScraper(ABC):
         nome_organizadora = unidecode(self.organizadora.nome).replace(" ", "_")
         nome_gincana = unidecode(self.gincana.nome).replace(" ", "_")
 
-        nome_tarefa = unidecode(tarefa.nome).replace(" ", "_")
+        nome_tarefa = tarefa.unidecoded_name
         nome_tarefa = f"{nome_tarefa}-{str(uuid.uuid4())[:4]}"
 
         directory = MEDIA_DIR / nome_organizadora / nome_gincana
