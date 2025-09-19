@@ -46,6 +46,8 @@ class Tarefa(SQLModel, table=True):
 
     id_interno: Optional[str]
 
+    disponivel_em_url: Optional[str] = Field(default=None)
+
     @property
     def unidecoded_name(self) -> str:
         return unidecode.unidecode(self.nome).replace(" ", "_")

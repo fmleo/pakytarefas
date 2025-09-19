@@ -42,6 +42,8 @@ class ArmadaScraper(BaseScraper):
                     pdf_path.relative_to(MEDIA_DIR)
                 )
 
+                tarefa_object.disponivel_em_url = f"https://armadaorganizadora.com.br/gymkhana{self.gincana.id_interno}/task/{tarefa['id']}"
+
                 tarefas.append(tarefa_object)
 
             return tarefas
