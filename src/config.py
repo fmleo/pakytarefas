@@ -1,6 +1,11 @@
 import logging
 from pathlib import Path
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 SRC_DIR = Path(__file__).parent
 ROOT_DIR = SRC_DIR.parent
 
@@ -18,3 +23,6 @@ logging.basicConfig(
 MEDIA_DIR = ROOT_DIR / "media"
 
 MEDIA_DIR.mkdir(exist_ok=True)
+
+WUZAPI_SERVER_URL = os.environ["WUZAPI_SERVER_URL"]
+WUZAPI_TOKEN = os.environ["WUZAPI_TOKEN"]
