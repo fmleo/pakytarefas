@@ -14,7 +14,7 @@ class WuzapiSender(BaseSender):
                 "Phone": self.gincana.id_grupo_whatsapp,
                 "Document": f"data:application/octet-stream;base64,{tarefa.get_base64_encoded_file_data()}",
                 "FileName": f"{tarefa.unidecoded_name}.pdf",
-                "Body": f"{tarefa.nome}\nSetor: {tarefa.setor}",
+                "Caption": f"{tarefa.nome}\nSetor: {tarefa.setor}\nLink: {tarefa.disponivel_em_url}",
             }
 
             client.post("/chat/send/document", json=body)
