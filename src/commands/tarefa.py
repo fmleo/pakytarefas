@@ -6,6 +6,7 @@ import click
 from db_session import get_session
 from repository import GincanaRepository, TarefaRepository
 from scrapers.base_scraper import BaseScraper
+from senders.wuzapi_sender import WuzapiSender
 
 logger = logging.getLogger(__name__)
 
@@ -61,5 +62,6 @@ def discover():
                     logger.info("Nenhuma nova tarefa adicionada, finalizando...")
                     return
 
-                for tarefa in new_tarefas:
-                    ...
+                sender = WuzapiSender(gincana=gincana)
+
+                sender.send_tarefas(new_tarefas)
