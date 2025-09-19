@@ -16,3 +16,5 @@ database.sqlite
 *.log
 
 .env
+
+setup.sh
