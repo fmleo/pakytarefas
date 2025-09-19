@@ -8,6 +8,7 @@ dependencies = [
     "click>=8.2.1",
     "httpx>=0.28.1",
     "pdfkit>=1.0.0",
+    "questionary>=2.1.1",
     "sqlmodel>=0.0.24",
     "unidecode>=1.4.0",
 ]

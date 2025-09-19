@@ -57,5 +57,9 @@ def discover():
                     gincana.id, scraped_tarefas
                 )
 
-                if new_tarefas:
-                    print(new_tarefas)
+                if not new_tarefas:
+                    logger.info("Nenhuma nova tarefa adicionada, finalizando...")
+                    return
+
+                for tarefa in new_tarefas:
+                    ...

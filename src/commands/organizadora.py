@@ -1,8 +1,13 @@
 import click
+import questionary
 
 from db_session import get_session
 from models import Organizadora
 from repository import OrganizadoraRepository
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @click.group(name="organizadora")
@@ -12,22 +17,30 @@ def organizadora_group():
 
 
 @organizadora_group.command
-@click.option("--nome", required=True, help="Nome da organizadora")
-@click.option("--scraper_class", required=True, help="Classe do Scraper para a organizadora, implementado no módulo scrapers")
-@click.option("--url", required=True, help="URL base do site da organizadora, sem a última /")
-def add(nome: str, scraper_class: str, url: str):
+def add():
+    nome = questionary.text(message="Nome da organizadora").ask()
+
+    available_scrapers = __import__("scrapers").__all__
+    scraper_class = questionary.select(
+        message="Classe do Scraper para a organizadora",
+        instruction="Implementado no módulo scrapers",
+        choices=available_scrapers,
+    ).ask()
+
+    url = questionary.text(
+        message="URL base do site da organizadora", instruction="sem a última /"
+    ).ask()
+
     with get_session() as session:
         organizadora_repo = OrganizadoraRepository(session)
 
         if organizadora_repo.find_by_nome(nome):
-            click.echo(f"Organizadora '{nome}' já existe.")
+            logger.fatal(f"Organizadora '{nome}' já existe.")
             return
 
-        organizadora = Organizadora(
-            nome=nome, scraper_class=scraper_class, url=url
-        )
+        organizadora = Organizadora(nome=nome, scraper_class=scraper_class, url=url)
         organizadora_repo.add(organizadora)
-        click.echo(f"Organizadora '{nome}' adicionada com sucesso.")
+        logger.info(f"Organizadora '{nome}' adicionada com sucesso.")
 
 
 @organizadora_group.command
@@ -38,9 +51,7 @@ def list():
         organizadoras = organizadora_repo.list()
 
         if not organizadoras:
-            click.echo("Nenhuma organizadora encontrada.")
+            logger.fatal("Nenhuma organizadora encontrada.")
             return
 
-        click.echo("Organizadoras:")
-        for organizadora in organizadoras:
-            click.echo(f"- {organizadora.nome}")
+        logger.info(f"Organizadoras: {', '.join([o.nome for o in organizadoras])}")
